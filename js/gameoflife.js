@@ -11,12 +11,16 @@ function same([x, y], [j, k]) {
 // The game state to search for `cell` is passed as the `this` value of the function.
 function contains(cell) {
         const state = this;
-        let c = 0
+        
+        let c = 0;
         state.forEach(function(el){
             if(el[0] == cell[0] && el[1] == cell[1]){
                  c++;
             }
+            console.log(c)
+
         })
+       // console.log(c + 2)
         return c == 0 ? false : true;
 }
 
@@ -29,27 +33,51 @@ const printCell = (cell, state) => {
  };
 
 const corners = (state = []) => {
-  console.log(state)
     if(state.length == 0){
       return {topRight:[0,0],bottomLeft:[0,0]}
     }else{
       var maxY = state[0][0];
+      var maxX = state[0][1];
+
+      var minY = state[0][0];
+      var minX = state[0][0];
+
        state.forEach(arr =>{
-           if(arr[0] > maxY){
+           if(arr[0] > maxY || arr[1] > maxX){
              maxY = arr[0];
-           }
-       })
-       var maxX = state[0][1];
-       state.forEach(arr =>{
-           if(arr[1] > maxX){
              maxX = arr[1];
            }
        })
-      console.log(maxX)
+
+       state.forEach(arr =>{
+        if(arr[0] < minY || arr[1] < minX){
+          minY = arr[0];
+          minX = arr[1];
+        }
+    })
+    return {topRight:[maxY,maxX],bottomLeft:[minY,minX]}
     }
 };
 
-const printCells = (state) => {};
+const printCells = (state) => {
+    let {topRight,bottomLeft } = corners(state);
+    let bottoRight = [topRight[0],bottomLeft[0]];
+    let topLeft = [bottomLeft[1],topRight[1]];
+    let cell = topLeft ;
+    let arr = [];
+    
+    let column = (topRight[0] - topLeft[0])  ;
+    let rows = (bottoRight[1] - bottomLeft[1]) ;
+
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < column; j++) {
+             arr.push(printCell([i,j],state));
+         }
+        
+         arr.push('\n');
+      }    
+      return arr.join(' ');
+};
 
 const getNeighborsOf = ([x, y]) => {};
 
