@@ -1,13 +1,53 @@
-function seed() {}
+function seed() {
+  return Object.values(arguments);
+}
 
-function same([x, y], [j, k]) {}
+function same([x, y], [j, k]) {
+    let arg1 = arguments[0];
+    let arg2 = arguments[1];
+    return arg1[0] === arg2[0] && arg1[1] === arg2[1] ? true:false;
+}  
 
 // The game state to search for `cell` is passed as the `this` value of the function.
-function contains(cell) {}
+function contains(cell) {
+        const state = this;
+        let c = 0
+        state.forEach(function(el){
+            if(el[0] == cell[0] && el[1] == cell[1]){
+                 c++;
+            }
+        })
+        return c == 0 ? false : true;
+}
 
-const printCell = (cell, state) => {};
+const printCell = (cell, state) => {
+  if(contains.call(state,cell)){
+     return '\u25A3';
+  }else{
+      return '\u25A2';
+  }
+ };
 
-const corners = (state = []) => {};
+const corners = (state = []) => {
+  console.log(state)
+    if(state.length == 0){
+      return {topRight:[0,0],bottomLeft:[0,0]}
+    }else{
+      var maxY = state[0][0];
+       state.forEach(arr =>{
+           if(arr[0] > maxY){
+             maxY = arr[0];
+           }
+       })
+       var maxX = state[0][1];
+       state.forEach(arr =>{
+           if(arr[1] > maxX){
+             maxX = arr[1];
+           }
+       })
+      console.log(maxX)
+    }
+};
 
 const printCells = (state) => {};
 
