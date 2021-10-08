@@ -17,8 +17,6 @@ function contains(cell) {
             if(el[0] == cell[0] && el[1] == cell[1]){
                  c++;
             }
-            console.log(c)
-
         })
        // console.log(c + 2)
         return c == 0 ? false : true;
@@ -61,31 +59,96 @@ const corners = (state = []) => {
 
 const printCells = (state) => {
     let {topRight,bottomLeft } = corners(state);
-    let bottoRight = [topRight[0],bottomLeft[0]];
     let topLeft = [bottomLeft[1],topRight[1]];
-    let cell = topLeft ;
     let arr = [];
     
-    let column = (topRight[0] - topLeft[0])  ;
-    let rows = (bottoRight[1] - bottomLeft[1]) ;
-
+    let column = ( topRight[0] - bottomLeft[0] ) +1  ;
+    let rows = ( topLeft[1]-  bottomLeft[1] ) + 1;
+   /* console.log(bottomLeft+" \n")
+    console.log(rows + "\trows \n")
+    console.log(column + "\tcolumn \n")
+*/
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < column; j++) {
-             arr.push(printCell([i,j],state));
+       /* console.log("i "+i+" \n"+"j"+j) */
+             arr.push(printCell(bottomLeft,state));
+             bottomLeft[0] = bottomLeft[0] + 1;
          }
-        
+         bottomLeft[1] = bottomLeft[1] + 1;
          arr.push('\n');
       }    
       return arr.join(' ');
 };
 
-const getNeighborsOf = ([x, y]) => {};
+const getNeighborsOf = ([x, y]) => {
+  let neighbors = [];
+  //console.log('x:'+x+'y'+y)
+    for(let i = x - 1; i <= x+1;i++ ){
+         for(let j = y -1;  j <= y +1 ; j++){
+           i === x && j == y? x = x : neighbors.push([i,j]);
+         }
+    }
+        return neighbors;
+};
 
-const getLivingNeighbors = (cell, state) => {};
+const getLivingNeighbors = (cell, state) => {
+ let  allNeighbors = getNeighborsOf(cell),
+      livingNeighbors = [],
+      currentState = contains.bind(state);
+ 
+   allNeighbors.forEach(function(neighbor){
+     let doa = currentState(neighbor);
+       doa?livingNeighbors.push(neighbor): doa = doa;
+   })
+  // console.log(livingNeighbors)
+   return livingNeighbors;
+};
 
-const willBeAlive = (cell, state) => {};
+const willBeAlive = (cell, state) => {
+  let bool;
+ /* console.log('alive  :'+contains.call(state,cell)+"")  
+  console.log('neighbors'+getLivingNeighbors(cell,state).length+"")*/
+    let living =  getLivingNeighbors(cell,state).length;
+     if(living < 4){   
+        if(contains.call(state,cell)){
+            (living >= 2)?bool = true: bool =false;
+        }else{
+          living >= 3 ?bool = true: bool =false;
+        }
+      }
+ // console.log("result:  "+bool + "\n");
+  return bool;
+};
 
-const calculateNext = (state) => {};
+const calculateNext = (state) => {
+  let {topRight,bottomLeft } = corners(state);
+  topRight[0] = topRight[0] +1;
+  topRight[1] = topRight[1] +1;
+  bottomLeft[0] = bottomLeft[0] - 1;
+  bottomLeft[1] = bottomLeft[1] - 1;
+  let topLeft = [bottomLeft[1],topRight[1]];
+  let column = ( topRight[0] - bottomLeft[0] ) +1 ;
+  let rows = ( topLeft[1]-  bottomLeft[1] ) + 1;
+  let c = bottomLeft[0];
+  let arr = [];
+  for (let i = 0; i < rows; i++) {
+     bottomLeft[0] = c;
+     for (let j = 0; j < column; j++) {
+          let future = willBeAlive(bottomLeft,state);
+          let current = bottomLeft;
+         // console.log('current',bottomLeft);
+          if(future){
+           arr[0] == current;
+           console.log(arr)
+          }
+              bottomLeft[0] = bottomLeft[0] + 1;
+             // console.log("future:"+future  + "\n")
+          }
+          bottomLeft[1] = bottomLeft[1] + 1;
+       }
+ // console.log(arr);
+  return arr;
+};
 
 const iterate = (state, iterations) => {};
 
